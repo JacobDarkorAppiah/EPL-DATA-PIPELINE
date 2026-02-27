@@ -1,65 +1,56 @@
 import os
-import time
 import pandas as pd
-from playwright.sync_api import sync_playwright
+from bs4 import BeautifulSoup
 
-def scrape_epl_data():
-    # Use absolute paths so there's NO guessing where the file goes
+def process_local_html():
+    # Setup Paths
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     raw_dir = os.path.join(project_root, "data", "raw")
-    os.makedirs(raw_dir, exist_ok=True)
+    html_path = os.path.join(raw_dir, "epl_stats.html")
     save_path = os.path.join(raw_dir, "epl_2025_2026.csv")
 
-    url = "https://fbref.com/en/comps/9/Premier-League-Stats"
+    print(f"🔍 Looking for local HTML file at: {html_path}")
 
-    with sync_playwright() as p:
-        # We'll use a standard browser launch without the persistent profile for a 'fresh' try
-        browser = p.chromium.launch(headless=False, channel="msedge")
-        page = browser.new_page()
+    if not os.path.exists(html_path):
+        print("❌ Error: 'epl_stats.html' not found in data/raw/!")
+        print("💡 TIP: Open the site in Edge, press Ctrl+S, and save it as 'epl_stats.html' in that folder.")
+        return
 
-        try:
-            print(f"📡 Navigating to: {url}")
-            page.goto(url, wait_until="load", timeout=90000)
+    try:
+        print("📖 Reading local HTML file...")
+        # We use 'lxml' or 'html.parser' to read the saved file
+        with open(html_path, 'r', encoding='utf-8') as f:
+            content = f.read()
 
-            print("\n🚨 ACTION REQUIRED:")
-            print("1. If Cloudflare blocks you, click 'Verify'.")
-            print("2. If the page is blank, REFRESH (F5).")
-            print("3. Once the table with 'Arsenal', 'Man City' etc. is visible...")
-            input(">>> Press ENTER here in the terminal to capture the data!")
+        tables = pd.read_html(content)
+        print(f"📊 Found {len(tables)} tables in the file.")
 
-            # Capture all tables on the page
-            content = page.content()
-            tables = pd.read_html(content)
+        league_table = None
+        for df in tables:
+            # Flatten multi-index if it exists
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(-1)
             
-            print(f"📊 Detected {len(tables)} tables. Looking for the League Standings...")
+            # Identify the correct table
+            if 'Squad' in df.columns and 'Pts' in df.columns:
+                league_table = df
+                break
 
-            found = False
-            for df in tables:
-                # FBref tables are often MultiIndex. Flatten them to check columns easily.
-                if isinstance(df.columns, pd.MultiIndex):
-                    df.columns = df.columns.get_level_values(-1)
-                
-                # Check for the key indicators of the EPL table
-                if 'Squad' in df.columns and 'Pts' in df.columns:
-                    # Clean it up
-                    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
-                    df['Season'] = '2025-2026'
-                    
-                    # SAVE IT
-                    df.to_csv(save_path, index=False)
-                    print(f"🎉 SUCCESS! File saved to: {save_path}")
-                    print(df[['RK', 'Squad', 'Pts']].head(5))
-                    found = True
-                    break
+        if league_table is not None:
+            # Clean up 'Unnamed' columns
+            league_table = league_table.loc[:, ~league_table.columns.str.contains('^Unnamed')]
             
-            if not found:
-                print("❌ ERROR: Could not find a table with 'Squad' and 'Pts'.")
+            # Save to CSV
+            league_table.to_csv(save_path, index=False)
+            print("-" * 50)
+            print(f"🎉 SUCCESS! Local HTML converted to CSV: {save_path}")
+            print(league_table[['RK', 'Squad', 'Pts']].head(5))
+            print("-" * 50)
+        else:
+            print("❌ ERROR: Could not find the League Table in the saved HTML.")
 
-        except Exception as e:
-            print(f"🚨 CRITICAL ERROR: {e}")
-        
-        finally:
-            browser.close()
+    except Exception as e:
+        print(f"🚨 CRITICAL ERROR: {e}")
 
 if __name__ == "__main__":
-    scrape_epl_data()
+    process_local_html()
