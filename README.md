@@ -19,8 +19,14 @@ An automated, production-grade system for extracting and analyzing English Premi
 
 ## 🏗️ Architecture
 ```mermaid
-graph LR
-    A[FBref] --> B[Python Scraper]
-    B --> C[Data Validation]
-    C --> D[AWS S3 Storage]
-    D --> E[ML Models]
+graph LD
+    A[World Wide Web / FBref] -->|HTTP Request| B(Python Scraper Engine)
+    B -->|BeautifulSoup| C{HTML Parser}
+    C -->|Extraction| D[Raw DataFrame]
+    D -->|Pandas Validation| E{Integrity Guard}
+    E -->|Fails| F[Error Log/Skip]
+    E -->|Passes| G[Clean CSV]
+    G -->|Boto3 SDK| H[Amazon S3 Data Lake]
+    H -->|Monitoring Script| I{Health Check}
+    I -->|Stale/Small| J[Failure Alert]
+    I -->|Verified| K[Production Ready Data]
