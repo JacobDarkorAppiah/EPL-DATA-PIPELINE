@@ -1,0 +1,6 @@
+2026/02/27-03:18:54.555 11ac Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/02/27-03:18:54.556 11ac Recovering log #23
+2026/02/27-03:18:54.556 11ac Reusing old log C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/000023.log 
+2026/02/27-03:18:57.635 b68 Level-0 table #27: started
+2026/02/27-03:18:57.742 b68 Level-0 table #27: 681688 bytes OK
+2026/02/27-03:18:57.794 b68 Delete type=0 #23

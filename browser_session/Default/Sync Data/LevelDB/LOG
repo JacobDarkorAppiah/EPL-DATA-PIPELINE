@@ -1,2 +1,3 @@
-2026/02/27-03:00:12.341 26fc Creating DB C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Sync Data\LevelDB since it was missing.
-2026/02/27-03:00:12.682 26fc Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/02/27-03:19:22.910 3078 Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/02/27-03:19:22.923 3078 Recovering log #3
+2026/02/27-03:19:22.923 3078 Reusing old log C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Sync Data\LevelDB/000003.log 

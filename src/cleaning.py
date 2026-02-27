@@ -1,55 +1,55 @@
 import pandas as pd
 import os
-import glob
 
 def clean_epl_data():
-    # 1. FIND ALL RAW FILES
-    raw_path = "data/raw/*.csv"
-    files = glob.glob(raw_path)
-    
-    if not files:
-        print("⚠️ No raw files found. Run the scraper first!")
+    # This gets the folder where cleaner.py is (src) and moves up to the main folder
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    raw_path = os.path.join(base_dir, "data", "raw", "epl_2025_2026.csv")
+    processed_dir = os.path.join(base_dir, "data", "processed")
+    save_path = os.path.join(processed_dir, "cleaned_epl_2025_2026.csv")
+
+    print(f"🔍 Checking for file at: {raw_path}")
+
+    if not os.path.exists(raw_path):
+        print(f"❌ Error: File not found at the path above.")
+        print("💡 TIP: Run 'python src/scraper.py' again and watch for the Success message.")
         return
 
-    processed_data = []
-
-    for file in files:
-        print(f"🧹 Cleaning: {file}")
-        df = pd.read_csv(file)
-
-        # 2. DROP 'DUMMY' ROWS
-        # FBref often includes extra header rows mid-table. We remove them.
+    print("🧹 Starting Data Cleaning...")
+    
+    # Load data
+    df = pd.read_csv(raw_path)
+    
+    # 1. Remove rows where 'Squad' is 'Squad' (FBref repeat headers)
+    if 'Squad' in df.columns:
         df = df[df['Squad'] != 'Squad']
-
-        # 3. COLUMN RENAMING & SELECTION
-        # We focus on the core stats: Matches Played, Wins, Draws, Losses, Goals For/Against, Points
-        cols_to_keep = ['Squad', 'MP', 'W', 'D', 'L', 'GF', 'GA', 'GD', 'Pts', 'Season']
-        df = df[cols_to_keep]
-
-        # 4. DATA TYPE CONVERSION
-        # Ensure numbers are actually treated as numbers (integers)
-        numeric_cols = ['MP', 'W', 'D', 'L', 'GF', 'GA', 'GD', 'Pts']
-        df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors='coerce')
-
-        # 5. MATHEMATICAL VALIDATION
-        # In a 3-point system: (Wins * 3) + Draws should equal Points.
-        # Also: Wins + Draws + Losses must equal Matches Played.
-        integrity_check = df.apply(lambda row: (row['W'] + row['D'] + row['L']) == row['MP'], axis=1)
-        
-        if not integrity_check.all():
-            print(f"🚨 Integrity Warning in {file}: Some rows have mismatched MP counts!")
-        
-        processed_data.append(df)
-
-    # 6. MERGE ALL SEASONS INTO ONE MASTER FILE
-    final_df = pd.concat(processed_data, ignore_index=True)
     
-    # Ensure the processed directory exists
-    os.makedirs("data/processed", exist_ok=True)
+    # 2. Select columns we actually need for our model
+    # We use a 'try-except' here in case the scraper grabbed different names
+    try:
+        cols_to_keep = {
+            'RK': 'rank',
+            'Squad': 'team',
+            'MP': 'matches_played',
+            'W': 'wins',
+            'D': 'draws',
+            'L': 'losses',
+            'GF': 'goals_for',
+            'GA': 'goals_against',
+            'Pts': 'points'
+        }
+        df = df[list(cols_to_keep.keys())].rename(columns=cols_to_keep)
+    except KeyError as e:
+        print(f"⚠️ Warning: Missing some columns. Found: {df.columns.tolist()}")
+
+    # 3. Save the cleaned data
+    os.makedirs(processed_dir, exist_ok=True)
+    df.to_csv(save_path, index=False)
     
-    output_file = "data/processed/epl_master_cleaned.csv"
-    final_df.to_csv(output_file, index=False)
-    print(f"✅ Cleaned data merged and saved to {output_file}")
+    print("-" * 30)
+    print(f"✅ CLEANING SUCCESS! Data saved to {save_path}")
+    print(df.head())
+    print("-" * 30)
 
 if __name__ == "__main__":
     clean_epl_data()

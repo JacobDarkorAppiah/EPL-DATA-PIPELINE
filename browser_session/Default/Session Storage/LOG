@@ -1,5 +1,15 @@
-2026/02/27-03:00:13.433 1480 Creating DB C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage since it was missing.
-2026/02/27-03:00:14.851 1480 Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage/MANIFEST-000001
-2026/02/27-03:01:31.641 1a14 Level-0 table #5: started
-2026/02/27-03:01:31.719 1a14 Level-0 table #5: 61210 bytes OK
-2026/02/27-03:01:31.754 1a14 Delete type=0 #3
+2026/02/27-03:19:23.268 34d4 Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage/MANIFEST-000001
+2026/02/27-03:19:23.269 34d4 Recovering log #26
+2026/02/27-03:19:23.314 34d4 Level-0 table #28: started
+2026/02/27-03:19:23.551 34d4 Level-0 table #28: 1756176 bytes OK
+2026/02/27-03:19:23.609 34d4 Delete type=0 #26
+2026/02/27-03:19:23.613 1f74 Compacting 4@0 + 1@1 files
+2026/02/27-03:19:23.837 1f74 Generated table #30@0: 124 keys, 2110397 bytes
+2026/02/27-03:19:23.993 1f74 Generated table #31@0: 45 keys, 1402409 bytes
+2026/02/27-03:19:23.997 1f74 Compacted 4@0 + 1@1 files => 3512806 bytes
+2026/02/27-03:19:24.016 1f74 compacted to: files[ 0 2 1 0 0 0 0 ]
+2026/02/27-03:19:24.020 1f74 Delete type=2 #17
+2026/02/27-03:19:24.020 1f74 Delete type=2 #19
+2026/02/27-03:19:24.033 1f74 Delete type=2 #22
+2026/02/27-03:19:24.033 1f74 Delete type=2 #25
+2026/02/27-03:19:24.033 1f74 Delete type=2 #28
