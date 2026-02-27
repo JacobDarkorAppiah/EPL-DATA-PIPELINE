@@ -6,9 +6,19 @@ import os
 
 # 1. THE DISGUISE (To avoid the 403 Bouncer)
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept-Language': 'en-US,en;q=0.9'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': 'https://www.google.com/', # Pretend we came from Google
+    'DNT': '1' # Do Not Track
 }
+
+# Use a SESSION instead of a simple GET
+def scrape_epl_season(url, season_name):
+    session = requests.Session() # Keeps cookies like a real browser
+    try:
+        response = session.get(url, headers=HEADERS, timeout=15)
+        # ... rest of your code ...
 
 def scrape_epl_season(url, season_name):
     print(f"🕵️‍♂️ Accessing data for {season_name}...")
