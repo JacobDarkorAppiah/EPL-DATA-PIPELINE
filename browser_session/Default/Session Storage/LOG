@@ -1,0 +1,5 @@
+2026/02/27-03:00:13.433 1480 Creating DB C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage since it was missing.
+2026/02/27-03:00:14.851 1480 Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage/MANIFEST-000001
+2026/02/27-03:01:31.641 1a14 Level-0 table #5: started
+2026/02/27-03:01:31.719 1a14 Level-0 table #5: 61210 bytes OK
+2026/02/27-03:01:31.754 1a14 Delete type=0 #3

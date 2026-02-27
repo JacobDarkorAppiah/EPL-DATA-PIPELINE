@@ -1,0 +1,5 @@
+2026/02/27-03:00:21.487 2adc Creating DB C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/02/27-03:00:22.009 2adc Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/02/27-03:00:26.381 26fc Level-0 table #5: started
+2026/02/27-03:00:26.670 26fc Level-0 table #5: 681585 bytes OK
+2026/02/27-03:00:26.827 26fc Delete type=0 #3

@@ -1,0 +1,5 @@
+2026/02/27-03:00:13.432 1a14 Creating DB C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Local Storage\leveldb since it was missing.
+2026/02/27-03:00:14.597 1a14 Reusing MANIFEST C:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Local Storage\leveldb/MANIFEST-000001
+2026/02/27-03:01:14.861 1480 Level-0 table #5: started
+2026/02/27-03:01:14.908 1480 Level-0 table #5: 69848 bytes OK
+2026/02/27-03:01:14.943 1480 Delete type=0 #3

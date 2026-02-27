@@ -1,63 +1,76 @@
-from playwright.sync_api import sync_playwright
-import pandas as pd
 import os
 import time
+import pandas as pd
+from playwright.sync_api import sync_playwright
 
-def scrape_with_browser():
+def scrape_epl_data():
     url = "https://fbref.com/en/comps/9/Premier-League-Stats"
-    print("🚀 Launching invisible browser to bypass Cloudflare...")
+    raw_dir = os.path.join("data", "raw")
+    os.makedirs(raw_dir, exist_ok=True)
+    save_path = os.path.join(raw_dir, "epl_2025_2026.csv")
+
+    print("🚀 Launching Edge with Persistent Human Profile...")
 
     with sync_playwright() as p:
-        # Change True to False so a window pops up on your screen
-        browser = p.chromium.launch(headless=False)
-        page = browser.new_page()
+        # This creates a folder to save your 'human' session
+        user_data_dir = "./browser_session"
         
+        browser_context = p.chromium.launch_persistent_context(
+            user_data_dir,
+            headless=False,
+            channel="msedge",
+            args=["--disable-blink-features=AutomationControlled"],
+            viewport={'width': 1280, 'height': 800}
+        )
+        
+        page = browser_context.pages[0]
+
         try:
-            # 1. Increase timeout to 60 seconds
-            # 2. Only wait for the HTML structure (domcontentloaded), not the ads
-            print("⏳ Navigating to FBref (this may take a minute)...")
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            print(f"📡 Navigating to FBref...")
+            page.goto(url, wait_until="commit", timeout=90000)
+
+            print("🛑 ACTION REQUIRED:")
+            print("1. If there is a checkbox, click it.")
+            print("2. If the page stays stuck, REFRESH the Edge window manually.")
+            print("3. I will wait until I see the word 'Squad' on the screen...")
             
-            # 3. Wait for the specific table to appear in the HTML
-            print("🔍 Looking for the stats table...")
-            page.wait_for_selector('table', timeout=15000)
+            # Wait up to 2 minutes for you to solve the puzzle
+            page.wait_for_selector("text=Squad", timeout=120000)
             
-            # Give it a tiny bit of time to settle
-            time.sleep(3) 
-            
+            print("✅ 'Squad' detected! Reading tables...")
+            time.sleep(5) # Let the table finish drawing
+
             content = page.content()
             all_tables = pd.read_html(content)
             
-            # ... (rest of your table finding logic stays the same)
-            
-            # Find the league table (the one with 'Squad' and 'Pts')
             league_table = None
             for df in all_tables:
-                if 'Squad' in df.columns and 'Pts' in df.columns:
+                col_text = str(df.columns.tolist())
+                if 'Squad' in col_text and 'Pts' in col_text:
                     league_table = df
                     break
-            
+
             if league_table is not None:
-                # Clean up the table headers
                 if isinstance(league_table.columns, pd.MultiIndex):
                     league_table.columns = league_table.columns.get_level_values(-1)
-                
+
+                league_table = league_table.loc[:, ~league_table.columns.str.contains('^Unnamed')]
                 league_table['Season'] = '2025-2026'
-                
-                # Save the file
-                os.makedirs("data/raw", exist_ok=True)
-                save_path = "data/raw/epl_2025_2026.csv"
                 league_table.to_csv(save_path, index=False)
-                
-                print(f"✅ FINAL SUCCESS! File saved at: {save_path}")
-                print(league_table.head(3))
+
+                print("-" * 50)
+                print(f"🎉 SUCCESS! Data saved at: {save_path}")
+                print(league_table[['RK', 'Squad', 'Pts']].head(5))
+                print("-" * 50)
             else:
-                print("❌ Table not found on the page.")
+                print("❌ ERROR: Found the page but couldn't parse the table.")
 
         except Exception as e:
-            print(f"🚨 Browser Error: {e}")
+            print(f"🚨 ERROR: {e}")
+        
         finally:
-            browser.close()
+            print("👋 Closing browser...")
+            browser_context.close()
 
 if __name__ == "__main__":
-    scrape_with_browser()
+    scrape_epl_data()
