@@ -1,26 +1,25 @@
-import requests
+import cloudscraper
 from bs4 import BeautifulSoup, Comment
 import pandas as pd
 import os
 
-# 1. THE UPDATED DISGUISE
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Referer': 'https://www.google.com/'
-}
-
-def scrape_epl_season(url, season_name):
-    print(f"🕵️‍♂️ Accessing data for {season_name}...")
-    session = requests.Session() 
+def scrape_epl_season():
+    # Target the 2025-2026 season
+    season_name = "2025-2026"
+    url = "https://fbref.com/en/comps/9/Premier-League-Stats"
+    
+    print(f"🕵️‍♂️ Accessing data for {season_name} using Cloudscraper...")
+    
+    # Create a scraper instance that looks like a real browser
+    scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
     
     try:
-        # The code that might fail
-        response = session.get(url, headers=HEADERS, timeout=15)
+        response = scraper.get(url, timeout=15)
         response.raise_for_status() 
         
         soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # FBref often hides the main table in comments
         comments = soup.find_all(string=lambda text: isinstance(text, Comment))
         
         for comment in comments:
@@ -29,16 +28,18 @@ def scrape_epl_season(url, season_name):
                 df = pd.read_html(str(table_soup))[0]
                 df['Season'] = season_name
                 
+                # Save the data
                 os.makedirs("data/raw", exist_ok=True)
-                save_path = f"data/raw/epl_{season_name.replace('/', '_')}.csv"
+                save_path = f"data/raw/epl_{season_name.replace('-', '_')}.csv"
                 df.to_csv(save_path, index=False)
-                print(f"✅ Successfully saved to {save_path}")
+                
+                print(f"✅ SUCCESS! Saved {season_name} data to {save_path}")
                 return df
                 
+        print("❌ HTML loaded, but couldn't find the stats table in comments.")
+        
     except Exception as e:
-        # The safety net that catches the error
-        print(f"🚨 Failed to scrape {season_name}: {e}")
+        print(f"🚨 Still blocked! Error: {e}")
 
 if __name__ == "__main__":
-    target_url = "https://fbref.com/en/comps/9/Premier-League-Stats"
-    scrape_epl_season(target_url, "2023-2024")
+    scrape_epl_season()
