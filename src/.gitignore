@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+venv/
+*.pyc
+
+# Data (We keep the folder, but ignore the contents)
+data/raw/*
+data/processed/*
+
+# Credentials
+.env
