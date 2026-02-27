@@ -22,7 +22,7 @@ def fetch_latest_stats():
         logger.info("Attempting to fetch latest stats from FBref...")
         
         # Human-like delay: Don't rush the server!
-        time.sleep(3) 
+        time.sleep(1) # Faster, but slightly riskier for bot detectio
         
         response = requests.get(url, headers=headers, timeout=15)
         
