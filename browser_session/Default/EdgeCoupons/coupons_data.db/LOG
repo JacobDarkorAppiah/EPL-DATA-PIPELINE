@@ -1,15 +1,6 @@
-2026/02/27-03:29:49.565 1d9c Reusing MANIFEST c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
-2026/02/27-03:29:49.566 1d9c Recovering log #32
-2026/02/27-03:29:49.567 1d9c Reusing old log c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/000032.log 
-2026/02/27-03:29:49.567 2cd4 Compacting 4@0 + 1@1 files
-2026/02/27-03:29:49.699 2cd4 Generated table #35@0: 3 keys, 681688 bytes
-2026/02/27-03:29:49.699 2cd4 Compacted 4@0 + 1@1 files => 681688 bytes
-2026/02/27-03:29:49.730 2cd4 compacted to: files[ 0 1 1 0 0 0 0 ]
-2026/02/27-03:29:49.730 2cd4 Delete type=2 #21
-2026/02/27-03:29:49.730 2cd4 Delete type=2 #24
-2026/02/27-03:29:49.730 2cd4 Delete type=2 #27
-2026/02/27-03:29:49.730 2cd4 Delete type=2 #30
-2026/02/27-03:29:49.743 2cd4 Delete type=2 #33
-2026/02/27-03:29:50.038 2810 Level-0 table #37: started
-2026/02/27-03:29:50.106 2810 Level-0 table #37: 681688 bytes OK
-2026/02/27-03:29:50.202 2810 Delete type=0 #32
+2026/02/27-03:33:01.321 30b8 Reusing MANIFEST c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/02/27-03:33:01.322 30b8 Recovering log #36
+2026/02/27-03:33:01.322 30b8 Reusing old log c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\EdgeCoupons/coupons_data.db/000036.log 
+2026/02/27-03:33:07.069 2238 Level-0 table #40: started
+2026/02/27-03:33:07.139 2238 Level-0 table #40: 681688 bytes OK
+2026/02/27-03:33:07.192 2238 Delete type=0 #36

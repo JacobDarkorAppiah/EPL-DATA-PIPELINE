@@ -1,11 +1,27 @@
-2026/02/27-03:29:35.508 18a4 Reusing MANIFEST c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage/MANIFEST-000001
-2026/02/27-03:29:35.511 18a4 Recovering log #34
-2026/02/27-03:29:35.536 18a4 Level-0 table #36: started
-2026/02/27-03:29:35.970 18a4 Level-0 table #36: 1722191 bytes OK
-2026/02/27-03:29:35.972 18a4 Recovering log #35
-2026/02/27-03:29:35.974 18a4 Level-0 table #37: started
-2026/02/27-03:29:36.284 18a4 Level-0 table #37: 34115 bytes OK
-2026/02/27-03:29:36.485 18a4 Delete type=0 #34
-2026/02/27-03:29:36.485 18a4 Delete type=0 #35
-2026/02/27-03:29:59.996 34b0 Level-0 table #40: started
-2026/02/27-03:30:00.202 34b0 Level-0 table #40: 1722335 bytes OK
+2026/02/27-03:32:35.773 17d0 Reusing MANIFEST c:\EPL-PROJECT\EPL-DATA-PIPELINE\browser_session\Default\Session Storage/MANIFEST-000001
+2026/02/27-03:32:35.774 17d0 Recovering log #38
+2026/02/27-03:32:36.300 17d0 Level-0 table #40: started
+2026/02/27-03:32:36.474 17d0 Level-0 table #40: 1722335 bytes OK
+2026/02/27-03:32:36.476 17d0 Recovering log #39
+2026/02/27-03:32:36.591 17d0 Level-0 table #41: started
+2026/02/27-03:32:36.652 17d0 Level-0 table #41: 34024 bytes OK
+2026/02/27-03:32:36.716 17d0 Delete type=0 #38
+2026/02/27-03:32:36.716 17d0 Delete type=0 #39
+2026/02/27-03:32:36.718 3488 Compacting 5@0 + 2@1 files
+2026/02/27-03:32:37.812 3488 Generated table #43@0: 184 keys, 2110837 bytes
+2026/02/27-03:32:37.927 3488 Generated table #44@0: 48 keys, 1402543 bytes
+2026/02/27-03:32:37.928 3488 Compacted 5@0 + 2@1 files => 3513380 bytes
+2026/02/27-03:32:37.959 3488 compacted to: files[ 0 2 1 0 0 0 0 ]
+2026/02/27-03:32:37.960 3488 Delete type=2 #30
+2026/02/27-03:32:37.960 3488 Delete type=2 #31
+2026/02/27-03:32:37.960 3488 Delete type=2 #33
+2026/02/27-03:32:37.961 3488 Delete type=2 #36
+2026/02/27-03:32:37.961 3488 Delete type=2 #37
+2026/02/27-03:32:37.961 3488 Delete type=2 #40
+2026/02/27-03:32:37.961 3488 Delete type=2 #41
+2026/02/27-03:33:36.952 3488 Level-0 table #46: started
+2026/02/27-03:33:37.150 3488 Level-0 table #46: 241306 bytes OK
+2026/02/27-03:33:37.204 3488 Delete type=0 #42
+2026/02/27-03:33:49.881 3488 Level-0 table #48: started
+2026/02/27-03:33:50.024 3488 Level-0 table #48: 1515091 bytes OK
+2026/02/27-03:33:50.102 3488 Delete type=0 #45
