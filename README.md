@@ -19,7 +19,7 @@ An automated, production-grade system for extracting and analyzing English Premi
 
 ## 🏗️ Architecture
 ```mermaid
-graph LD
+graph TD
     A[World Wide Web / FBref] -->|HTTP Request| B(Python Scraper Engine)
     B -->|BeautifulSoup| C{HTML Parser}
     C -->|Extraction| D[Raw DataFrame]
