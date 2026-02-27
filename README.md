@@ -4,8 +4,7 @@
 ![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
 ![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 
-# 🏟️ Resilient EPL Data PipelineXIT
-
+# 🏟️ Resilient EPL Data Pipeline
 **Author:** [Jacob Darkor Appiah](https://github.com/JacobDarkorAppiah)
 **Organization:** Codveda Technologies | Data Science Intern
 
