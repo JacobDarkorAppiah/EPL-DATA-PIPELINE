@@ -1,45 +1,34 @@
 import cloudscraper
-from bs4 import BeautifulSoup, Comment
 import pandas as pd
 import os
 
-def scrape_epl_season():
-    # Target the 2025-2026 season
-    season_name = "2025-2026"
+def scrape_simple():
     url = "https://fbref.com/en/comps/9/Premier-League-Stats"
+    scraper = cloudscraper.create_scraper()
     
-    print(f"🕵️‍♂️ Accessing data for {season_name} using Cloudscraper...")
-    
-    # Create a scraper instance that looks like a real browser
-    scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
+    print("🚀 Attempting direct table extraction...")
     
     try:
-        response = scraper.get(url, timeout=15)
-        response.raise_for_status() 
+        response = scraper.get(url)
+        # Use Pandas to read the HTML directly from the response text
+        # The 'match' parameter looks for a table containing the word 'Squad'
+        all_tables = pd.read_html(response.text, attrs={'id': 'results2025-202691_overall'})
         
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # FBref often hides the main table in comments
-        comments = soup.find_all(string=lambda text: isinstance(text, Comment))
-        
-        for comment in comments:
-            if 'id="results' in comment:
-                table_soup = BeautifulSoup(comment, 'html.parser')
-                df = pd.read_html(str(table_soup))[0]
-                df['Season'] = season_name
-                
-                # Save the data
-                os.makedirs("data/raw", exist_ok=True)
-                save_path = f"data/raw/epl_{season_name.replace('-', '_')}.csv"
-                df.to_csv(save_path, index=False)
-                
-                print(f"✅ SUCCESS! Saved {season_name} data to {save_path}")
-                return df
-                
-        print("❌ HTML loaded, but couldn't find the stats table in comments.")
-        
+        if all_tables:
+            df = all_tables[0]
+            df['Season'] = '2025-2026'
+            
+            os.makedirs("data/raw", exist_ok=True)
+            save_path = "data/raw/epl_2025_2026.csv"
+            df.to_csv(save_path, index=False)
+            
+            print(f"✅ SUCCESS! File created at: {save_path}")
+            return df
+        else:
+            print("❌ Table not found. FBref might have changed the Table ID.")
+
     except Exception as e:
-        print(f"🚨 Still blocked! Error: {e}")
+        print(f"🚨 Error: {e}")
 
 if __name__ == "__main__":
-    scrape_epl_season()
+    scrape_simple()
