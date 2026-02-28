@@ -1,0 +1,52 @@
+name: EPL Fresh Pipeline
+
+on:
+  workflow_dispatch:      # Allows you to click "Run workflow" manually
+  push:
+    branches: [ main ]    # Runs automatically on every push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas cloudscraper boto3 python-dotenv lxml beautifulsoup4
+
+      - name: Prepare Workspace
+        run: mkdir -p data/raw data/processed logs
+
+      - name: Execute Pipeline Steps
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          echo "🏃 Running Fetcher..."
+          python fetcher.py
+          
+          echo "🏃 Running Cleaner..."
+          python cleaning.py
+          
+          echo "🏃 Running S3 Upload..."
+          python upload_to_s3.py
+
+      - name: Store Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-data-and-logs
+          path: |
+            data/
+            logs/
