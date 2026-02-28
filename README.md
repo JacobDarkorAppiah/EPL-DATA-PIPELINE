@@ -14,8 +14,21 @@ A robust, cloud-native, automated **Data Engineering pipeline** that collects, p
 ---
 
 ## 🏗️ System Architecture
+```Mermaid
+graph TD
+    A[FBref Website<br>Cloudflare Protected] -->|cloudscraper TLS Bypass| B(Python Fetcher Engine)
+    B -->|lxml Parsing| C{HTML Processor}
+    C -->|Extraction| D[Raw DataFrame]
+    D -->|Pandas Cleaning| E{Integrity Guard}
+    E -->|Fails| F[Logged & Skipped]
+    E -->|Passes| G[Processed CSV Asset]
+    G -->|Docker Runtime| H[Containerized Pipeline]
+    H -->|GitHub Actions CRON| I[Automated Execution]
+    I -->|Boto3 SDK| J[Amazon S3 Data Lake]
+    J -->|S3 Event Notification| K[Amazon SNS Topic]
+    K -->|Email Alert| L[Stakeholders Notified]
 The pipeline is built on a modular, decoupled architecture to ensure high availability and data integrity.
-
+```
 
 
 ### 🧱 Architectural Layers
@@ -80,15 +93,16 @@ pip install -r requirements.txt
 ### 3. Environment Configuration
 Create a .env file in the root directory:
 
-Plaintext
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-AWS_REGION=your_region
-S3_BUCKET_NAME=your_bucket_name
+- AWS_ACCESS_KEY_ID=your_access_key
+- AWS_SECRET_ACCESS_KEY=your_secret_key
+- AWS_REGION=your_region
+- S3_BUCKET_NAME=your_bucket_name
 
 ### 4. Run with Docker
-PowerShell
-docker build -t epl-pipeline .
-docker run --env-file .env epl-pipeline
-🏆 Project Author
-Jacob Darkor Appiah Data Engineer | Python Developer | Cloud Practitioner Codveda Technologies | Data Science Intern
+-PowerShell
+-docker build -t epl-pipeline .
+-docker run --env-file .env epl-pipeline
+
+# 🏆 Project Author
+# Jacob Darkor Appiah 
+Data Engineer | Python Developer | Cloud Practitioner Codveda Technologies | Data Science Intern
