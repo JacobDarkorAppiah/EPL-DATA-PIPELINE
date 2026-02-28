@@ -14,21 +14,34 @@ A robust, cloud-native, automated **Data Engineering pipeline** that collects, p
 ---
 
 ## 🏗️ System Architecture
-```Mermaid
 graph TD
-    A[FBref Website<br>Cloudflare Protected] -->|cloudscraper TLS Bypass| B(Python Fetcher Engine)
+    %% Ingestion Layer
+    A[FBref Website<br/><i>Cloudflare Protected</i>] -->|cloudscraper TLS Bypass| B(Python Fetcher Engine)
     B -->|lxml Parsing| C{HTML Processor}
+    
+  %% Transformation Layer
     C -->|Extraction| D[Raw DataFrame]
     D -->|Pandas Cleaning| E{Integrity Guard}
     E -->|Fails| F[Logged & Skipped]
     E -->|Passes| G[Processed CSV Asset]
+    
+  %% DevOps & Orchestration
     G -->|Docker Runtime| H[Containerized Pipeline]
     H -->|GitHub Actions CRON| I[Automated Execution]
-    I -->|Boto3 SDK| J[Amazon S3 Data Lake]
-    J -->|S3 Event Notification| K[Amazon SNS Topic]
-    K -->|Email Alert| L[Stakeholders Notified]
+    
+  %% Cloud & Notification Layer
+    I -->|Boto3 SDK| J[(Amazon S3 Data Lake)]
+    J -->|S3 Event Notification| K{Amazon SNS Topic}
+    K -->|Email Alert| L[📧 Stakeholders Notified]
+
+  %% Styling
+    style A fill:#f96,stroke:#333,stroke-width:2px
+    style J fill:#ff9900,stroke:#232f3e,stroke-width:2px
+    style K fill:#ff9900,stroke:#232f3e,stroke-width:2px
+    style I fill:#2088ff,stroke:#fff,stroke-width:2px
+    style G fill:#4caf50,stroke:#333,stroke-width:2px
 The pipeline is built on a modular, decoupled architecture to ensure high availability and data integrity.
-```
+
 
 
 ### 🧱 Architectural Layers
