@@ -1,49 +1,29 @@
 import pandas as pd
 import os
+from utils.logger import setup_logger
 
-def clean_epl_data():
-    # 1. Define Paths (using absolute paths to prevent errors)
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    raw_path = os.path.join(project_root, "data", "raw", "epl_2025_2026.csv")
-    processed_dir = os.path.join(project_root, "data", "processed")
-    processed_path = os.path.join(processed_dir, "cleaned_epl_2025_2026.csv")
+logger = setup_logger("Data_Cleaner")
 
-    print(f"🔍 Looking for raw file at: {raw_path}")
+def clean_data():
+    # 1. Define universal paths
+    raw_data_path = os.path.join("data", "raw", "epl_stats.html")
+    processed_dir = os.path.join("data", "processed")
+    output_file = os.path.join(processed_dir, "cleaned_epl_2025_2026.csv")
 
-    # 2. Check if the file exists
-    if not os.path.exists(raw_path):
-        print("❌ Error: Still can't find the raw CSV.")
-        print("💡 Check your data/raw/ folder in VS Code. Is there a file there?")
-        return
-
-    # 3. Load and Clean
     try:
-        df = pd.read_csv(raw_path)
-        print("📖 Raw data loaded successfully!")
-
-        # Basic Cleaning
-        # Rename columns to lowercase for easier coding
-        df.columns = [col.lower() for col in df.columns]
-
-        # Select only the columns we need for analysis
-        # (Using 'rk' instead of 'rank' because that's how FBref exports it)
-        cols_to_keep = ['rk', 'squad', 'mp', 'w', 'd', 'l', 'pts', 'gd']
-        df_cleaned = df[cols_to_keep].copy()
-
-        # Rename 'squad' to 'team' for a cleaner look
-        df_cleaned = df_cleaned.rename(columns={'squad': 'team'})
-
-        # 4. Save the cleaned file
+        logger.info(f"🔄 Reading raw data from: {raw_data_path}")
+        
+        # Ensure the directory exists
         os.makedirs(processed_dir, exist_ok=True)
-        df_cleaned.to_csv(processed_path, index=False)
 
-        print("-" * 30)
-        print(f"✅ SUCCESS: Cleaned data saved to {processed_path}")
-        print(df_cleaned.head())
-        print("-" * 30)
+        # ... your existing scraping/cleaning logic here ...
+        # df = pd.read_html(raw_data_path)...
+
+        # 2. Save using the joined path
+        df.to_csv(output_file, index=False)
+        logger.info(f"✅ Cleaned data saved to {output_file}")
+        return True
 
     except Exception as e:
-        print(f"🚨 Cleaning Error: {e}")
-
-if __name__ == "__main__":
-    clean_epl_data()
+        logger.error(f"❌ Cleaning failed: {e}")
+        return False
