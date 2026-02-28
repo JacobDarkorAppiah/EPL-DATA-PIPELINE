@@ -33,20 +33,14 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          # This logic checks where your file is so it doesn't crash
-          if [ -f "fetcher.py" ]; then
-            python fetcher.py
-            python cleaning.py
-            python upload_to_s3.py
-          elif [ -f "src/fetcher.py" ]; then
-            python src/fetcher.py
-            python src/cleaning.py
-            python src/upload_to_s3.py
-          else
-            echo "❌ ERROR: Could not find fetcher.py in root or src/ folder!"
-            ls -R
-            exit 1
-          fi
+          echo "🏃 Running Fetcher from src..."
+          python src/fetcher.py
+          
+          echo "🏃 Running Cleaner from src..."
+          python src/cleaning.py
+          
+          echo "🏃 Running S3 Upload from src..."
+          python src/upload_to_s3.py
 
       - name: Store Artifacts
         if: always()
