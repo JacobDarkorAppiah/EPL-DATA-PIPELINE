@@ -1,9 +1,9 @@
 name: EPL Fresh Pipeline
 
 on:
-  workflow_dispatch:      # Allows you to click "Run workflow" manually
+  workflow_dispatch:      # Manual trigger button
   push:
-    branches: [ main ]    # Runs automatically on every push
+    branches: [ main ]    # Runs on every push to main
 
 jobs:
   build:
@@ -34,13 +34,13 @@ jobs:
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
           echo "🏃 Running Fetcher..."
-          python fetcher.py
+          python src/fetcher.py
           
           echo "🏃 Running Cleaner..."
-          python cleaning.py
+          python src/cleaning.py
           
           echo "🏃 Running S3 Upload..."
-          python upload_to_s3.py
+          python src/upload_to_s3.py
 
       - name: Store Artifacts
         if: always()
