@@ -8,36 +8,38 @@ load_dotenv()
 logger = setup_logger("S3_Uploader")
 
 def upload_to_s3():
-    # 1. MATCH THE PATH: Using os.path.join for Linux/Windows compatibility
+    # 1. Path Consistency: Must match cleaning.py output
     local_file = os.path.join("data", "processed", "cleaned_epl_2025_2026.csv")
     
-    # 2. Get credentials and validate they exist
+    # 2. Extract and Validate Environment Variables
     bucket_name = os.getenv("S3_BUCKET_NAME")
     s3_object_name = "epl_data/latest_stats.csv"
     
-    # Check if critical variables are missing
-    if not all([os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"), bucket_name]):
-        logger.error("❌ S3 Credentials or Bucket Name missing from environment variables.")
+    aws_key = os.getenv("AWS_ACCESS_KEY_ID")
+    aws_secret = os.getenv("AWS_SECRET_ACCESS_KEY")
+    aws_region = os.getenv("AWS_REGION", "us-east-1")
+
+    if not all([aws_key, aws_secret, bucket_name]):
+        logger.error("❌ Critical Error: AWS Credentials or Bucket Name missing from Environment!")
         return False
 
     # 3. Pre-flight check: Does the file exist?
     if not os.path.exists(local_file):
-        logger.error(f"❌ Upload aborted: {local_file} not found. Ensure cleaning.py ran successfully.")
+        logger.error(f"❌ Upload aborted: {local_file} not found. Scraper likely blocked by 403.")
         return False
 
-    # 4. Initialize Boto3 Client
+    # 4. Initialize Client and Upload
     try:
         s3_client = boto3.client(
             's3',
-            aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-            aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-            region_name=os.getenv("AWS_REGION", "us-east-1") # Default to us-east-1 if not set
+            aws_access_key_id=aws_key,
+            aws_secret_access_key=aws_secret,
+            region_name=aws_region
         )
 
-        logger.info(f"📤 Uploading {local_file} to S3 bucket: {bucket_name}...")
+        logger.info(f"📤 Uploading to S3: {bucket_name}/{s3_object_name}...")
         
-        # 5. Perform the Upload with Metadata
-        # Adding 'ContentType' ensures the file isn't treated as a generic 'binary' file
+        # Adding ContentType ensures the file opens correctly in browsers/apps
         s3_client.upload_file(
             local_file, 
             bucket_name, 
@@ -45,11 +47,11 @@ def upload_to_s3():
             ExtraArgs={'ContentType': 'text/csv'}
         )
         
-        logger.info(f"✅ Upload Successful! Destination: s3://{bucket_name}/{s3_object_name}")
+        logger.info("✅ Upload Successful!")
         return True
 
     except Exception as e:
-        logger.error(f"❌ S3 Upload failed: {str(e)}")
+        logger.error(f"❌ S3 Client Error: {str(e)}")
         return False
 
 if __name__ == "__main__":
