@@ -1,32 +1,94 @@
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
-![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+# ⚽ EPL-DATA-PIPELINE
+### 🚀 Production-Grade ETL & Analytics System
 
-# 🏟️ Resilient EPL Data Pipeline
-**Author:** [Jacob Darkor Appiah](https://github.com/JacobDarkorAppiah)
-**Organization:** Codveda Technologies | Data Science Intern
+<p align="center"> 
+  <img src="https://img.shields.io/badge/Python-3.12+-blue?logo=python"/> 
+  <img src="https://img.shields.io/badge/Docker-Containerized-blue?logo=docker"/> 
+  <img src="https://img.shields.io/badge/AWS-S3%20%7C%20SNS-orange?logo=amazon-aws"/> 
+  <img src="https://img.shields.io/badge/License-MIT-green"/> 
+</p>
 
-## 📝 Overview
-An automated, production-grade system for extracting and analyzing English Premier League data. This project focuses on **resilience**, **automation**, and **cloud-readiness**.
+## 📌 Overview
+A robust, cloud-native, automated **Data Engineering pipeline** that collects, processes, and analyzes English Premier League (EPL) data in real-time. This system transforms a static scraping script into a resilient production ecosystem.
 
-## 🛡️ Key Features
-* **Hidden Data Extraction:** Custom BeautifulSoup logic to find tables in HTML comments.
-* **Integrity Gate:** Mathematical validation ($W + D + L = MP$) using Pandas.
-* **AWS Integration:** Data persistence in Amazon S3 for 99.9% availability.
-* **Dockerized:** Fully containerized for one-click deployment.
+---
 
-## 🏗️ Architecture
-```mermaid
-graph TD
-    A[World Wide Web / FBref] -->|HTTP Request| B(Python Scraper Engine)
-    B -->|BeautifulSoup| C{HTML Parser}
-    C -->|Extraction| D[Raw DataFrame]
-    D -->|Pandas Validation| E{Integrity Guard}
-    E -->|Fails| F[Error Log/Skip]
-    E -->|Passes| G[Clean CSV]
-    G -->|Boto3 SDK| H[Amazon S3 Data Lake]
-    H -->|Monitoring Script| I{Health Check}
-    I -->|Stale/Small| J[Failure Alert]
-    I -->|Verified| K[Production Ready Data]
+## 🏗️ System Architecture
+The pipeline is built on a modular, decoupled architecture to ensure high availability and data integrity.
+
+
+
+### 🧱 Architectural Layers
+
+#### 1️⃣ Data Ingestion Layer (`fetcher.py`)
+* **Technology:** `cloudscraper`
+* **Features:** TLS handshake & JS challenge resolution, Cloudflare bypass, and Chrome (Windows) browser impersonation.
+
+#### 2️⃣ Data Processing Layer (`scraper.py` & `cleaning.py`)
+* **Parsing:** HTML parsing via `lxml`.
+* **Transformation:** Data normalization with `pandas`.
+* **Validation:** Schema enforcement (e.g., `pts` → `points`) and missing value handling.
+
+#### 3️⃣ Analytics Layer
+* **Top 4 Probability Model:** A lightweight statistical scoring system based on Points Per Game (PPG) and Goal Difference (GD).
+
+#### 4️⃣ Orchestration & Monitoring
+* **Automation:** **GitHub Actions** daily CRON execution (`0 0 * * *`).
+* **Cloud Persistence:** Secure data storage in **Amazon S3**.
+* **Alerting:** **Amazon SNS** publishes instant email notifications to stakeholders upon successful upload.
+
+
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Scraping** | `cloudscraper`, `requests` |
+| **Processing** | `pandas`, `lxml` |
+| **Cloud Storage** | `AWS S3` |
+| **Alerts** | `Amazon SNS` |
+| **Containerization** | `Docker` |
+| **Orchestration** | `GitHub Actions` |
+
+---
+
+## 🛡️ Engineering & DevOps Standards
+
+* **🔒 Zero-Leakage Security:** Credentials are never committed. We use `.gitignore`, `python-dotenv` for local dev, and **GitHub Secrets** for production.
+* **📊 Professional Logging:** Centralized via `utils/logger.py` with UTF-8 encoding (emoji-safe) and structured logging levels.
+* **🐳 Containerization:** The entire pipeline is containerized via a lightweight `Dockerfile`. The master controller (`main.py`) ensures "it works on my machine" translates to the cloud.
+* **🌿 Professional Git Workflow:** Strict Feature Branching Strategy (`feature/*`) ensures production stability.
+
+
+
+---
+
+## 🚀 Deployment & Usage
+
+### 1. Prerequisites
+- Python 3.12+
+- Docker Desktop
+- AWS Account (S3 Bucket & SNS Topic configured)
+
+### 2. Local Setup
+powershell
+git clone [https://github.com/JacobDarkorAppiah/epl-data-pipeline.git](https://github.com/JacobDarkorAppiah/epl-data-pipeline.git)
+cd epl-data-pipeline
+pip install -r requirements.txt
+### 3. Environment Configuration
+Create a .env file in the root directory:
+
+Plaintext
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+AWS_REGION=your_region
+S3_BUCKET_NAME=your_bucket_name
+
+### 4. Run with Docker
+PowerShell
+docker build -t epl-pipeline .
+docker run --env-file .env epl-pipeline
+🏆 Project Author
+Jacob Darkor Appiah Data Engineer | Python Developer | Cloud Practitioner Codveda Technologies | Data Science Intern
