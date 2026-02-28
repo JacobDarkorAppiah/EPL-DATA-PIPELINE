@@ -3,7 +3,7 @@ name: EPL Data Pipeline
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight
-  workflow_dispatch:      # <--- ADD THIS LINE (It creates the "Run workflow" button)
+  workflow_dispatch:      # Creates the manual "Run workflow" button
   push:
     branches:
       - main
@@ -24,22 +24,27 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests pandas lxml beautifulsoup4 html5lib boto3 python-dotenv
+          pip install requests pandas lxml beautifulsoup4 html5lib boto3 python-dotenv cloudscraper
+
+      - name: Create Directories
+        run: |
+          mkdir -p data/raw data/processed logs
 
       - name: Run Pipeline
-  env:
-    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    AWS_REGION: ${{ secrets.AWS_REGION }}
-    S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-  run: |
-    python fetcher.py
-    python cleaning.py
-    python upload_to_s3.py
+        env:
+          # Link your GitHub Secrets to the Environment
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          python fetcher.py
+          python cleaning.py
+          python upload_to_s3.py
 
       - name: Upload Logs as Artifacts
-        if: always() # Upload logs even if a previous step failed
+        if: always() # Uploads even if the scripts crash
         uses: actions/upload-artifact@v4
         with:
           name: pipeline-logs
-          path: logs/pipeline.log
+          path: logs/
