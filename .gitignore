@@ -1,13 +1,22 @@
-# Python
-__pycache__/
-venv/
-*.pyc
+# --- Security & Credentials ---
+.env
+.aws/
+credentials
+*.pem
+*.json
 
-# Data
-data/raw/*.csv
+# --- Python & Environment ---
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+
+# --- Local Data (Don't push huge CSVs/HTML) ---
 data/raw/*.html
 data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
 
-# Secrets & Logs
-.env
-logs/
+# --- Docker ---
+.dockerignore
