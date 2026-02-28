@@ -14,6 +14,7 @@ A robust, cloud-native, automated **Data Engineering pipeline** that collects, p
 ---
 
 ## 🏗️ System Architecture
+```mermaid
 graph TD
     %% Ingestion Layer
     A[FBref Website<br/><i>Cloudflare Protected</i>] -->|cloudscraper TLS Bypass| B(Python Fetcher Engine)
@@ -40,6 +41,7 @@ graph TD
     style K fill:#ff9900,stroke:#232f3e,stroke-width:2px
     style I fill:#2088ff,stroke:#fff,stroke-width:2px
     style G fill:#4caf50,stroke:#333,stroke-width:2px
+```
 The pipeline is built on a modular, decoupled architecture to ensure high availability and data integrity.
 
 
@@ -116,6 +118,6 @@ Create a .env file in the root directory:
 -docker build -t epl-pipeline .
 -docker run --env-file .env epl-pipeline
 
-# 🏆 Project Author
-# Jacob Darkor Appiah 
-Data Engineer | Python Developer | Cloud Practitioner Codveda Technologies | Data Science Intern
+# 🏆 Project Author # Jacob Darkor Appiah 
+
+Data Engineer | Python Developer | Cloud Practitioner| Codveda Technologies Data Science Intern
