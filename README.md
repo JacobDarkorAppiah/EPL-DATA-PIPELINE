@@ -106,7 +106,7 @@ git clone [https://github.com/JacobDarkorAppiah/epl-data-pipeline.git](https://g
 cd epl-data-pipeline
 pip install -r requirements.txt
 ### 3. Environment Configuration
-Create a .env file in the root directory:
+Created a .env file in the root directory:
 
 - AWS_ACCESS_KEY_ID=your_access_key
 - AWS_SECRET_ACCESS_KEY=your_secret_key
