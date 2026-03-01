@@ -1,44 +1,38 @@
-import cloudscraper
+import requests
 import os
-import time
+import json
+from dotenv import load_dotenv
 from utils.logger import setup_logger
 
+load_dotenv()
 logger = setup_logger("Data_Fetcher")
 
 def fetch_epl_data():
-    # 1. Initialize the stealthy scraper here
-    scraper = cloudscraper.create_scraper(
-        browser={
-            'browser': 'chrome',
-            'platform': 'windows',
-            'desktop': True
-        }
-    )
-
-    url = "https://fbref.com/en/comps/9/Premier-League-Stats"
+    api_key = os.getenv("FOOTBALL_DATA_API_KEY")
+    # This URL gets the current Premier League Standings
+    url = "https://api.football-data.org/v4/competitions/PL/standings"
     
-    try:
-        logger.info("Attempting to fetch latest stats from FBref...")
-        
-        # Add a small delay to look more human
-        time.sleep(3) 
-        
-        # 2. Use the 'scraper' object to get the page
-        response = scraper.get(url)
-        response.raise_for_status()
+    headers = { 'X-Auth-Token': api_key }
 
-        # 3. Use Universal Paths (Works on Windows & Linux/GitHub)
+    try:
+        logger.info("📡 Fetching EPL standings from API...")
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        
+        data = response.json()
+
+        # Save as JSON (much easier to handle than HTML!)
         os.makedirs(os.path.join("data", "raw"), exist_ok=True)
-        save_path = os.path.join("data", "raw", "epl_stats.html")
+        save_path = os.path.join("data", "raw", "epl_standings.json")
 
         with open(save_path, "w", encoding="utf-8") as f:
-            f.write(response.text)
+            json.dump(data, f, indent=4)
             
-        logger.info(f"✅ Successfully saved raw data to {save_path}")
+        logger.info(f"✅ Success! Data saved to {save_path}")
         return True
 
     except Exception as e:
-        logger.error(f"❌ Failed to fetch data: {e}")
+        logger.error(f"❌ API Error: {e}")
         return False
 
 if __name__ == "__main__":
