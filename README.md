@@ -9,115 +9,87 @@
 </p>
 
 ## 📌 Overview
-A robust, cloud-native, automated **Data Engineering pipeline** that collects, processes, and analyzes English Premier League (EPL) data in real-time. This system transforms a static scraping script into a resilient production ecosystem.
+A robust, cloud-native **Data Engineering pipeline** that automates the collection, transformation, and storage of English Premier League (EPL) standings. This system replaces fragile web scraping with a resilient REST API architecture, ensuring 99.9% data availability for downstream analytics.
 
 ---
 
 ## 🏗️ System Architecture
+
+
 ```mermaid
 graph TD
     %% Ingestion Layer
-    A[FBref Website<br/><i>Cloudflare Protected</i>] -->|cloudscraper TLS Bypass| B(Python Fetcher Engine)
-    B -->|lxml Parsing| C{HTML Processor}
+    A[Football-Data.org API<br/><i>REST Endpoint</i>] -->|JSON Request| B(Python Fetcher Engine)
+    B -->|json.load| C{Data Normalizer}
     
-  %% Transformation Layer
-    C -->|Extraction| D[Raw DataFrame]
-    D -->|Pandas Cleaning| E{Integrity Guard}
-    E -->|Fails| F[Logged & Skipped]
+    %% Transformation Layer
+    C -->|Extraction| D[Pandas DataFrame]
+    D -->|Cleaning & Mapping| E{Integrity Guard}
     E -->|Passes| G[Processed CSV Asset]
     
-  %% DevOps & Orchestration
+    %% DevOps & Orchestration
     G -->|Docker Runtime| H[Containerized Pipeline]
-    H -->|GitHub Actions CRON| I[Automated Execution]
+    H -->|GitHub Actions| I[Automated Execution]
     
-  %% Cloud & Notification Layer
+    %% Cloud & Notification Layer
     I -->|Boto3 SDK| J[(Amazon S3 Data Lake)]
     J -->|S3 Event Notification| K{Amazon SNS Topic}
     K -->|Email Alert| L[📧 Stakeholders Notified]
 
-  %% Styling
-    style A fill:#f96,stroke:#333,stroke-width:2px
+    style A fill:#00acee,stroke:#333,stroke-width:2px
     style J fill:#ff9900,stroke:#232f3e,stroke-width:2px
     style K fill:#ff9900,stroke:#232f3e,stroke-width:2px
-    style I fill:#2088ff,stroke:#fff,stroke-width:2px
-    style G fill:#4caf50,stroke:#333,stroke-width:2px
-```
-The pipeline is built on a modular, decoupled architecture to ensure high availability and data integrity.
 
+## 🧱 Architectural Layers
+1️⃣ Data Ingestion Layer (fetcher.py)
+Technology: REST API Consumption via requests.
 
+Features: X-Auth-Token authentication, automated JSON retrieval, and robust error handling for API rate limits.
 
-### 🧱 Architectural Layers
+2️⃣ Data Processing Layer (transformer.py)
+Parsing: Flattening nested JSON structures using pd.json_normalize.
 
-#### 1️⃣ Data Ingestion Layer (`fetcher.py`)
-* **Technology:** `cloudscraper`
-* **Features:** TLS handshake & JS challenge resolution, Cloudflare bypass, and Chrome (Windows) browser impersonation.
+Transformation: Schema enforcement and column mapping (e.g., team.name → team) for analytics readiness.
 
-#### 2️⃣ Data Processing Layer (`scraper.py` & `cleaning.py`)
-* **Parsing:** HTML parsing via `lxml`.
-* **Transformation:** Data normalization with `pandas`.
-* **Validation:** Schema enforcement (e.g., `pts` → `points`) and missing value handling.
+3️⃣ Cloud & Orchestration
+Automation: GitHub Actions daily execution.
 
-#### 3️⃣ Analytics Layer
-* **Top 4 Probability Model:** A lightweight statistical scoring system based on Points Per Game (PPG) and Goal Difference (GD).
+Storage: Amazon S3 (Medallion Architecture: raw/ and curated/ layers).
 
-#### 4️⃣ Orchestration & Monitoring
-* **Automation:** **GitHub Actions** daily CRON execution (`0 0 * * *`).
-* **Cloud Persistence:** Secure data storage in **Amazon S3**.
-* **Alerting:** **Amazon SNS** publishes instant email notifications to stakeholders upon successful upload.
+Alerting: Amazon SNS triggers instant email notifications upon successful data persistence. 
 
-
-
----
 
 ## 🛠️ Technology Stack
 
 | Layer | Technology |
 | :--- | :--- |
-| **Scraping** | `cloudscraper`, `requests` |
-| **Processing** | `pandas`, `lxml` |
+| **Data Source** | `Football-Data.org API` |
+| **Ingestion** | `Python`, `requests`, `python-dotenv` |
+| **Processing** | `pandas`, `JSON` |
 | **Cloud Storage** | `AWS S3` |
-| **Alerts** | `Amazon SNS` |
+| **Alerting** | `Amazon SNS` |
 | **Containerization** | `Docker` |
 | **Orchestration** | `GitHub Actions` |
 
----
+##🛡️ Engineering & DevOps Standards
+🔒 Zero-Leakage Security
+Credentials managed via .env (local) and GitHub Secrets (prod).
 
-## 🛡️ Engineering & DevOps Standards
+🐳 Containerization
+Lightweight Dockerfile ensures environment parity.
 
-* **🔒 Zero-Leakage Security:** Credentials are never committed. We use `.gitignore`, `python-dotenv` for local dev, and **GitHub Secrets** for production.
-* **📊 Professional Logging:** Centralized via `utils/logger.py` with UTF-8 encoding (emoji-safe) and structured logging levels.
-* **🐳 Containerization:** The entire pipeline is containerized via a lightweight `Dockerfile`. The master controller (`main.py`) ensures "it works on my machine" translates to the cloud.
-* **🌿 Professional Git Workflow:** Strict Feature Branching Strategy (`feature/*`) ensures production stability.
+📊 Professional Logging
+Emoji-safe, structured logging via utils/logger.py.
 
+🚀 Usage
+Sync AWS Credentials: ./sync_lab.ps1
 
+Run Pipeline:
 
----
+PowerShell:
+python src/fetcher.py
+python src/transformer.py
+python src/upload_to_s3.py
 
-## 🚀 Deployment & Usage
-
-### 1. Prerequisites
-- Python 3.12+
-- Docker Desktop
-- AWS Account (S3 Bucket & SNS Topic configured)
-
-### 2. Local Setup
-powershell
-git clone [https://github.com/JacobDarkorAppiah/epl-data-pipeline.git](https://github.com/JacobDarkorAppiah/epl-data-pipeline.git)
-cd epl-data-pipeline
-pip install -r requirements.txt
-### 3. Environment Configuration
-Created a .env file in the root directory:
-
-- AWS_ACCESS_KEY_ID=your_access_key
-- AWS_SECRET_ACCESS_KEY=your_secret_key
-- AWS_REGION=your_region
-- S3_BUCKET_NAME=your_bucket_name
-
-### 4. Run with Docker
--PowerShell
--docker build -t epl-pipeline .
--docker run --env-file .env epl-pipeline
-
-# 🏆 Project Author # Jacob Darkor Appiah 
-
-Data Engineer | Python Developer | Cloud Practitioner| Codveda Technologies Data Science Intern
+##🏆 Project Author Jacob Darkor Appiah
+Data Engineer | Codveda Technologies Data Science Intern
