@@ -30,16 +30,13 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }} # <--- New line added
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
         run: |
-          echo "🏃 Running Fetcher from src..."
+          echo "🏃 Running Pipeline with Session Token..."
           python src/fetcher.py
-          
-          echo "🏃 Running Cleaner from src..."
           python src/cleaning.py
-          
-          echo "🏃 Running S3 Upload from src..."
           python src/upload_to_s3.py
 
       - name: Store Artifacts
